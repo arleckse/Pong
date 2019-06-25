@@ -1,0 +1,106 @@
+import pygame
+
+# Screen
+swidth = 600
+sheight = 600
+size = (swidth, sheight)
+
+# Ball
+ball_x = swidth // 2
+ball_y = sheight // 2
+ball_vel_y = 3
+ball_vel_x = 3
+
+# Paddle1
+pad1_x = 15
+pad1_y = sheight / 2
+pad1_w = 10
+pad1_h = 50
+
+# Paddle2
+pad2_x = swidth - 20
+pad2_y = sheight / 2
+pad2_w = 10
+pad2_h = 50
+
+# Pause
+Pause = 0
+
+# Colors
+White = (255, 255, 255)
+
+pygame.init()
+
+screen = pygame.display.set_mode(size)
+pygame.display.set_caption("Pong")
+clock = pygame.time.Clock()
+
+
+def Ball_move():
+    global ball_x, ball_y, ball_vel_y, ball_vel_x
+
+    # Wall Collision
+    if ball_y > sheight or ball_y < 5:
+        ball_vel_y = ball_vel_y * -1
+
+    # Collision with pad1
+    if ball_x < pad1_x + pad1_w and ball_y > pad1_y and ball_y < pad1_y + pad1_h:
+            ball_x=25
+            ball_vel_x == ball_vel_x + 1
+            ball_vel_x = (ball_vel_x * -1)
+            ball_vel_x = ball_vel_x+1
+
+    # Collision with pad2
+    if ball_x  > pad2_x - pad2_w and ball_y > pad2_y and ball_y < pad2_y + pad2_h:
+        ball_x= pad2_x-pad2_w
+        ball_vel_x = ball_vel_x + 1
+        ball_vel_x = (ball_vel_x * -1)
+
+    # Start
+    if ball_x > 0 and ball_x < swidth:
+        ball_x += ball_vel_x
+        ball_y += ball_vel_y
+    else:
+        ball_x = swidth // 2
+        ball_y = sheight // 2
+        ball_vel_x = 3
+        ball_vel_y = 3
+
+
+def Player2_move():
+    global ball_y, pad2_y, pad2_h
+    if ball_y > pad2_y:
+        pad2_y += 3
+    if ball_y < pad2_y + pad2_h - 25:
+        pad2_y -= 3
+
+
+while (True):
+
+    # Keyhandler
+    keys = pygame.key.get_pressed()  # checking pressed keys
+    if keys[pygame.K_UP] and pad1_y > 0:
+        pad1_y -= 6
+        #print("UP")
+    if keys[pygame.K_DOWN] and pad1_y + pad2_h < sheight:
+        #print("DOWN")
+        pad1_y += 6
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            exit()
+
+    # Functions
+    Ball_move()
+    Player2_move()
+
+    # Draw
+    screen.fill(pygame.Color(0, 0, 0, 255))
+    pygame.draw.line(screen, White, [swidth / 2, 0], [swidth / 2, sheight], 1)
+    pygame.draw.circle(screen, White, [swidth // 2, sheight // 2], 20, 1)
+    pygame.draw.rect(screen, White, (pad1_x, pad1_y, pad1_w, pad1_h))
+    pygame.draw.rect(screen, White, (pad2_x, pad2_y, pad2_w, pad2_h))
+    pygame.draw.circle(screen, White, [ball_x, ball_y], 5, 0)
+
+    pygame.display.flip()
+    clock.tick(60)
